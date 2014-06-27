@@ -1,0 +1,4 @@
+requests==2.3.0
+SQLAlchemy==0.9.6
+html5lib==0.999
+lxml==3.3.5

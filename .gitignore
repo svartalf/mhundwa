@@ -28,3 +28,6 @@ docs/_build
 
 .env
 .idea
+
+# project files
+settings_local.py
