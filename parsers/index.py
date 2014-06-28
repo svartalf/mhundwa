@@ -4,16 +4,14 @@ from __future__ import absolute_import
 
 import html5lib
 
-import requests
-
+from helpers import get
 from models import Post, session
 
 
 def parse():
     """Парсинг индексной страницы и поиск новых постов"""
 
-    content = open('/tmp/index.html')
-    # content = requests.get('https://auto.leprosorium.ru/'.format(post_id))
+    content = get('https://auto.leprosorium.ru/')
     doc = html5lib.parse(content, treebuilder='lxml', namespaceHTMLElements=False)
 
     posts = doc.xpath('//div[@class="b-posts_holder"]/div[contains(@class, "post")]')

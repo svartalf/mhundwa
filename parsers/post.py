@@ -3,14 +3,18 @@
 from __future__ import absolute_import
 
 import re
+import os
 import urlparse
 import html5lib
 import datetime
+import logging
+import tempfile
 
-import requests
-
+from helpers import get
 from models import Video, Post, session
 
+
+logger = logging.getLogger(__name__)
 
 SECONDS_RE = re.compile(r'(\d+)s')
 MINUTES_RE = re.compile(r'(\d+)m(\d+)s')
@@ -37,8 +41,14 @@ def parse(post_id=None):
     session.add(post)
     session.commit()
 
-    content = open('/tmp/post.html')
-    # content = requests.get('https://auto.leprosorium.ru/comments/{}/'.format(post_id))
+    logger.debug('Parsing post #{}'.format(post.id))
+
+    content = get('https://auto.leprosorium.ru/comments/{}/'.format(post.id))
+
+    # Сохраняем копию страницы на всякий случай
+    with open(os.path.join(tempfile.gettempdir(), '{}.html'.format(post.id)), 'w') as storage:
+        storage.write(content)
+
     doc = html5lib.parse(content, treebuilder='lxml', namespaceHTMLElements=False)
 
     comments = doc.xpath('//div[@class="b-post_comments"]/div[contains(@class, "comment")]')
@@ -48,10 +58,13 @@ def parse(post_id=None):
         comment_date = int(comment.xpath('.//span[contains(@class, "js-date")]')[0].attrib['data-epoch_date'])
         comment_date = datetime.datetime.fromtimestamp(comment_date)
 
+        logger.debug('Processing comment #{}'.format(comment_id))
+
         links = comment.xpath('.//div[@class="c_body"]/a/@href')
         for link in links:
             if not 'youtu' in link:
                 # TODO: проверять наличие ссылок на следующие автопосты
+                logger.debug('Skipping link `{}`'.format(link))
                 continue
 
             url = urlparse.urlparse(link)
@@ -77,6 +90,8 @@ def parse(post_id=None):
                     match = MINUTES_RE.match(params['v'][0])
                     if match:
                         timestamp = (int(match.group(1)) * 60) + int(match.group(2))
+
+            logger.debug('Saving information about YouTube video {}'.format(video_id))
 
             video = session.query(Video).filter_by(id=video_id).first()
             if video is None:
