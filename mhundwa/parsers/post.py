@@ -10,8 +10,8 @@ import datetime
 import logging
 import tempfile
 
-from helpers import get
-from models import Video, Post, session
+from mhundwa.helpers import get
+from mhundwa.models import Video, Post, session
 
 
 logger = logging.getLogger(__name__)

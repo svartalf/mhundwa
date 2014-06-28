@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, relationship, backref
 import settings
 
 
-engine = create_engine(settings.DATABASE_URI, echo=True)
+engine = create_engine(settings.DATABASE_URI)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -24,7 +24,7 @@ class Post(Base):
 class Video(Base):
     __tablename__ = 'videos'
     __tableargs__ = (
-        sa.UniqueConstraint('post_id', 'comment_id')
+        sa.UniqueConstraint('post_id', 'comment_id'),
     )
 
     id = sa.Column(sa.String(12), primary_key=True)

@@ -25,7 +25,7 @@ def get(url, max_retries=3):
 
     cookie_file = os.path.join(tempfile.gettempdir(), AUTH_COOKIES_FILENAME)
     try:
-        with open(cookie_file, 'w') as storage:
+        with open(cookie_file, 'r') as storage:
             cookies = json.load(storage)
     except IOError:
         cookies = {}
@@ -65,6 +65,7 @@ def get(url, max_retries=3):
                 logger.error('Cannot authenticate. Got response: {}'.format(auth_response.content))
                 raise RuntimeError('Authentication failed')
 
+        logger.debug('Got content from URL {}'.format(url))
         return response.content
 
     raise RuntimeError('Cant fetch page {}'.format(url))
