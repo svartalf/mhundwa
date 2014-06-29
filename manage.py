@@ -3,6 +3,7 @@
 import os
 import sys
 import errno
+import inspect
 
 from mhundwa.models import Base, engine
 from mhundwa.parsers.index import parse as parse_index
@@ -31,7 +32,7 @@ if __name__ == '__main__':
         if isinstance(e, KeyError):
             sys.stdout.write('Unknown command!\n\n')
         commands_list = u'\n'.join([
-            u'{}: {}'.format(key, value.__doc__.split('\n')[0].decode('utf-8')) for key, value in commands.items()
+            u'{}: {}'.format(key, inspect.getdoc(value).decode('utf-8').split('\n')[0]) for key, value in commands.items()
         ])
         sys.stdout.write(u'Run one of those commands:\n\n{}\n'.format(commands_list))
         sys.exit(errno.EINVAL)
