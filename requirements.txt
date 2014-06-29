@@ -3,3 +3,4 @@ SQLAlchemy==0.9.6
 html5lib==0.999
 lxml==3.3.5
 Fabric==1.9.0
+youtube_dl==2014.06.25
