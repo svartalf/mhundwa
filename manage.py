@@ -6,8 +6,8 @@ import errno
 import inspect
 
 from mhundwa.models import Base, engine
-from mhundwa.parsers.index import parse as parse_index
-from mhundwa.parsers.post import parse as parse_post
+from mhundwa.commands.index import parse as parse_index
+from mhundwa.commands.post import parse as parse_post
 
 sys.path.insert(0, os.path.abspath('.'))
 

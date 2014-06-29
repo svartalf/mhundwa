@@ -91,8 +91,6 @@ def parse(post_id=None):
                     if match:
                         timestamp = (int(match.group(1)) * 60) + int(match.group(2))
 
-            logger.info('Saving information about YouTube video {}'.format(video_id))
-
             video = session.query(Video).filter_by(id=video_id).first()
             if video is None:
                 video = Video(id=video_id, timestamp=timestamp, author_id=author_id, post_id=post.id,
@@ -100,6 +98,4 @@ def parse(post_id=None):
                 session.add(video)
                 session.commit()
 
-
-if __name__ == '__main__':
-    parse(1)
+                logger.info('Saving information about YouTube video {}'.format(video_id))
