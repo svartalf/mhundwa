@@ -37,4 +37,4 @@ def download():
 
     downloader.download(['http://www.youtube.com/watch?v={}'.format(id_) for id_ in download_targets])
 
-    logger.info('Videos downloading is done')
+    logger.info('{} video(s) downloading is done'.format(len(download_targets)))
