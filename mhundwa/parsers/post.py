@@ -91,7 +91,7 @@ def parse(post_id=None):
                     if match:
                         timestamp = (int(match.group(1)) * 60) + int(match.group(2))
 
-            logger.debug('Saving information about YouTube video {}'.format(video_id))
+            logger.info('Saving information about YouTube video {}'.format(video_id))
 
             video = session.query(Video).filter_by(id=video_id).first()
             if video is None:

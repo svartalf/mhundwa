@@ -28,7 +28,7 @@ def parse():
         post_id = int(post.attrib['id'].replace('p', ''))
         instance = session.query(Post).filter_by(id=post_id).first()
         if instance is None:
-            logger.debug('Found new post #{}'.format(instance.id))
+            logger.info('Found new post #{}'.format(post_id))
             instance = Post(id=post_id)
             session.add(instance)
             session.commit()
