@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.abspath('.'))
 def database_create(*args):
     """Создание базы данных и всех таблиц"""
 
-    Base.metadata.drop(engine)
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
 
