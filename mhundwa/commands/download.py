@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def download():
+    """Резервное копирование видео файлов"""
+
     if not os.path.isdir(settings.VIDEOS_FOLDER):
         os.makedirs(settings.VIDEOS_FOLDER)
 
@@ -22,7 +24,7 @@ def download():
     videos = session.query(Video).filter(Video.post_id.in_(latest_posts)).order_by(Video.post_id.desc())
 
     download_targets = []
-    for video in videos:
+    for video in videos[:3]:
         if not os.path.exists(os.path.join(settings.VIDEOS_FOLDER, video.id)):
             download_targets.append(video.id)
 
@@ -38,3 +40,14 @@ def download():
     downloader.download(['http://www.youtube.com/watch?v={}'.format(id_) for id_ in download_targets])
 
     logger.info('{} video(s) downloading is done'.format(len(download_targets)))
+
+    logger.debug('Cleaning up videos directory')
+
+    required_videos = [x.id for x in videos]
+    for root, dir, files in os.walk(settings.VIDEOS_FOLDER):
+        for filename in files:
+            if not filename in required_videos:
+                os.remove(os.path.join(root, filename))
+                logger.info('Removing video file {}'.format(filename))
+
+    logger.debug('Videos directory is clean now')
