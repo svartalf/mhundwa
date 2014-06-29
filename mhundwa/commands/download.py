@@ -24,7 +24,7 @@ def download():
     videos = session.query(Video).filter(Video.post_id.in_(latest_posts)).order_by(Video.post_id.desc())
 
     download_targets = []
-    for video in videos[:3]:
+    for video in videos:
         if not os.path.exists(os.path.join(settings.VIDEOS_FOLDER, video.id)):
             download_targets.append(video.id)
 
