@@ -32,7 +32,7 @@ class Video(Base):
     comment_id = sa.Column(sa.Integer, index=True)
     author_id = sa.Column(sa.Integer, index=True)
     was_removed = sa.Column(sa.Boolean, default=False)
-    was_reposted = sa.Column(sa.Boolean, default=False)
+    repost_id = sa.Column(sa.String(12), nullable=True)
     posted = sa.Column(sa.DateTime)
     timestamp = sa.Column(sa.Integer, default=0)
 
