@@ -1,10 +1,22 @@
 # -*- coding: utf-8 -*-
 
-# http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html
-DATABASE_URI = 'sqlite:////tmp/lepra.db'
+from os import path
 
-# Путь до папки с резервными копиями видео
-VIDEOS_FOLDER = '/tmp/mhundwa'
+
+PWD = path.abspath('.')
+
+# Корневая папка данных
+DATA_ROOT = path.join(PWD, 'mhundwa-data')
+
+# Путь до папки с копиями видео
+DATA_VIDEOS = path.join(DATA_ROOT, 'videos')
+
+# Путь к файлу с данными авторизации
+DATA_CREDENTIALS = path.join(DATA_ROOT, 'credentials.json')
+
+# URI подключения к БД
+# http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html
+DATABASE_URI = 'sqlite:///{}'.format(path.join(DATA_ROOT, 'mhundwa.sqlite'))
 
 AUTH_USERNAME = ''
 AUTH_PASSWORD = ''
