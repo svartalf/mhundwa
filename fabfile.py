@@ -19,7 +19,7 @@ env.hosts = HOSTS
 def deploy():
     sudo('cd {}; git pull'.format(PROJECT_ROOT))
 
-    sudo('{} -r {}'.format(
+    sudo('{} install -r {}'.format(
         os.path.join(PROJECT_ROOT, ENV_FOLDER, 'bin/pip'),
         os.path.join(PROJECT_ROOT, 'requirements.txt'),
     ))
