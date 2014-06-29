@@ -8,6 +8,7 @@ import inspect
 from mhundwa.models import Base, engine
 from mhundwa.commands.index import parse as parse_index
 from mhundwa.commands.post import parse as parse_post
+from mhundwa.commands.download import download
 
 sys.path.insert(0, os.path.abspath('.'))
 
@@ -23,6 +24,7 @@ commands = {
     'parse_index': parse_index,
     'parse_post': parse_post,
     'database_create': database_create,
+    'download': download,
 }
 
 
