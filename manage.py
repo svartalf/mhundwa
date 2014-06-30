@@ -11,11 +11,21 @@ from mhundwa.commands.post import parse as parse_post
 from mhundwa.commands.download import download
 from mhundwa.commands.inventory_post import inventory_post
 
+import settings
+
 sys.path.insert(0, os.path.abspath('.'))
 
 
 def database_create(*args):
     """Создание базы данных и всех таблиц"""
+
+    try:
+        os.makedirs(settings.DATA_ROOT)
+    except OSError as err:
+        if err.errno == errno.EEXIST and os.path.isdir(settings.DATA_ROOT):
+            pass
+        else:
+            raise
 
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)

@@ -13,19 +13,14 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-AUTH_COOKIES_FILENAME = 'mhundwa-auth-cookies.json'
+def request(method, url, max_retries=3, *args, **kwargs):
+    """Обертка над `requests.request`, делающая авторизацию, если сессионная кука протухла
 
-
-def get(url, max_retries=3):
-    """Обертка над `requests.get`, делающая авторизацию, если сессионная кука протухла
-
-    Сессионые куки лежат в файле `AUTH_COOKIES_FILENAME`, который лежит в временной директории системы,
-    например `/tmp/mhundwa-auth-cookies.json`
+    Сессионые куки лежат в файле `settings.DATA_CREDENTIALS`
     """
 
-    cookie_file = os.path.join(tempfile.gettempdir(), AUTH_COOKIES_FILENAME)
     try:
-        with open(cookie_file, 'r') as storage:
+        with open(settings.DATA_CREDENTIALS, 'r') as storage:
             cookies = json.load(storage)
     except IOError:
         cookies = {}
@@ -36,7 +31,7 @@ def get(url, max_retries=3):
     session.cookies.update(cookies)
 
     while max_retries:
-        response = session.get(url, allow_redirects=False)
+        response = session.request(method, url, allow_redirects=False, *args, **kwargs)
         max_retries -= 1
 
         if response.status_code == 302:
@@ -53,7 +48,7 @@ def get(url, max_retries=3):
                     'uid': auth_response.cookies['uid'],
                     'sid': auth_response.cookies['sid'],
                 }
-                with open(cookie_file, 'w') as storage:
+                with open(settings.DATA_CREDENTIALS, 'w') as storage:
                     logger.debug('Saving auth cookies: {}'.format(cookies))
                     json.dump(cookies, storage)
                 session.cookies.update(cookies)
@@ -66,9 +61,16 @@ def get(url, max_retries=3):
                 raise RuntimeError('Authentication failed')
 
         logger.debug('Got content from URL {}'.format(url))
+        # TODO: вырезать из страницы CSRF token и сохранять его в файл `settings.DATA_CREDENTIALS`
+
         return response.content
 
     raise RuntimeError('Cant fetch page {}'.format(url))
 
-if __name__ == '__main__':
-    print get('https://auto.leprosorium.ru/comments/1736842/')
+
+def get(*args, **kwargs):
+    return request('GET', *args, **kwargs)
+
+
+def post(*args, **kwargs):
+    return request('POST',  *args, **kwargs)
