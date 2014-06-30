@@ -13,17 +13,13 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-AUTH_COOKIES_FILENAME = 'mhundwa-auth-cookies.json'
-
-
 def get(url, max_retries=3):
     """Обертка над `requests.get`, делающая авторизацию, если сессионная кука протухла
 
-    Сессионые куки лежат в файле `AUTH_COOKIES_FILENAME`, который лежит в временной директории системы,
-    например `/tmp/mhundwa-auth-cookies.json`
+    Сессионые куки лежат в файле `settings.DATA_CREDENTIALS`
     """
 
-    cookie_file = os.path.join(tempfile.gettempdir(), AUTH_COOKIES_FILENAME)
+    cookie_file = os.path.join(tempfile.gettempdir(), settings.DATA_CREDENTIALS)
     try:
         with open(cookie_file, 'r') as storage:
             cookies = json.load(storage)
