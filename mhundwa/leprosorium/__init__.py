@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Библиотека для запросов к лепре"""
+
 import re
 
 from mhundwa.helpers import get
