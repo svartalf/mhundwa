@@ -13,8 +13,8 @@ import settings
 logger = logging.getLogger(__name__)
 
 
-def get(url, max_retries=3):
-    """Обертка над `requests.get`, делающая авторизацию, если сессионная кука протухла
+def request(method, url, max_retries=3, *args, **kwargs):
+    """Обертка над `requests.request`, делающая авторизацию, если сессионная кука протухла
 
     Сессионые куки лежат в файле `settings.DATA_CREDENTIALS`
     """
@@ -32,7 +32,7 @@ def get(url, max_retries=3):
     session.cookies.update(cookies)
 
     while max_retries:
-        response = session.get(url, allow_redirects=False)
+        response = session.request(method, url, allow_redirects=False, *args, **kwargs)
         max_retries -= 1
 
         if response.status_code == 302:
@@ -66,5 +66,10 @@ def get(url, max_retries=3):
 
     raise RuntimeError('Cant fetch page {}'.format(url))
 
-if __name__ == '__main__':
-    print get('https://auto.leprosorium.ru/comments/1736842/')
+
+def get(*args, **kwargs):
+    return request('GET', *args, **kwargs)
+
+
+def post(*args, **kwargs):
+    return request('POST',  *args, **kwargs)

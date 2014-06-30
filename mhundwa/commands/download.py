@@ -9,6 +9,7 @@ import youtube_dl
 from youtube_dl.utils import DownloadError
 
 from mhundwa.models import Video, Post, session
+from mhundwa.leprosorium.comments import vote
 import settings
 
 
@@ -27,7 +28,7 @@ def download():
     download_targets = []
     for video in videos:
         if not os.path.exists(os.path.join(settings.DATA_VIDEOS, video.id)):
-            download_targets.append(video.id)
+            download_targets.append(video)
 
     if not download_targets:
         logger.debug('All videos are already downloaded')
@@ -38,14 +39,19 @@ def download():
     })
     downloader.add_default_info_extractors()
 
-    for video_id in download_targets:
+    for video in download_targets:
         try:
-            downloader.extract_info('http://www.youtube.com/watch?v={}'.format(video_id))
+            downloader.extract_info('http://www.youtube.com/watch?v={}'.format(video.id))
         except DownloadError as e:
             if 'This video has been removed by the user' in e.message:
-                session.query(Video).filter_by(id=video_id).update({'was_removed': True})
+                session.query(Video).filter_by(id=video.id).update({'was_removed': True})
                 session.commit()
+
                 continue
+
+        else:
+            # Ставим плюс комментарию, отмечая, что мы сделали копию видео
+            vote(video.comment_id, +1)
 
     logger.info('{} video(s) downloading is done'.format(len(download_targets)))
 
