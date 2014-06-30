@@ -29,7 +29,7 @@ def inventory_post():
        с новым видео."""
 
     latest_posts = [x[0] for x in session.query(Post).order_by(Post.id.desc()).limit(2).values(Post.id)]
-    videos = session.query(Video).filter(Video.post_id.in_(latest_posts)).filter_by(was_removed=False).order_by(Video.post_id.desc())
+    videos = session.query(Video).filter(Video.post_id.in_(latest_posts)).filter_by(was_removed=False, repost_id=None).order_by(Video.post_id.desc())
 
     downloader = youtube_dl.YoutubeDL({
         'outtmpl': os.path.join(settings.DATA_VIDEOS, '%(id)s'),
@@ -37,17 +37,20 @@ def inventory_post():
     downloader.add_default_info_extractors()
 
     for video in videos:
+        if not os.path.exists(os.path.join(settings.DATA_VIDEOS, video.id)):
+            logger.warning('Skipping video {} check, because video file doesn\'t exists'.format(video.id))
+            continue
+
         try:
             downloader.extract_info('http://www.youtube.com/watch?v={}'.format(video.id), download=False)
         except DownloadError:
             # Видео было удалено, закачиваем резервную копию, оставляем комментарий
 
-            if not video.repost_id:
-                try:
-                    video = upload_video(video)
-                except RuntimeError as e:
-                    logger.exception('Got unexpected error')
-                    continue
+            try:
+                video = upload_video(video)
+            except RuntimeError:
+                logger.exception('Got unexpected error')
+                continue
 
             comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
             create(video.post_id, video.comment_id, comment)
