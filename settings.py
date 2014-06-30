@@ -14,6 +14,8 @@ DATA_VIDEOS = path.join(DATA_ROOT, 'videos')
 # Путь к файлу с данными авторизации
 DATA_CREDENTIALS = path.join(DATA_ROOT, 'credentials.json')
 
+GOOGLE_API_CREDENTIALS = path.join(DATA_ROOT, 'google-credentials.json')
+
 # URI подключения к БД
 # http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html
 DATABASE_URI = 'sqlite:///{}'.format(path.join(DATA_ROOT, 'mhundwa.sqlite'))

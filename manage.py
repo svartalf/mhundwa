@@ -10,6 +10,7 @@ from mhundwa.commands.index import parse as parse_index
 from mhundwa.commands.post import parse as parse_post
 from mhundwa.commands.download import download
 from mhundwa.commands.inventory_post import inventory_post
+from mhundwa.youtube import _get_youtube_service
 
 import settings
 
@@ -31,12 +32,19 @@ def database_create(*args):
     Base.metadata.create_all(engine)
 
 
+def google_oauth(*args, **kwargs):
+    """OAuth авторизация Google для YouTube"""
+
+    _get_youtube_service()
+
+
 commands = {
     'parse_index': parse_index,
     'parse_post': parse_post,
     'database_create': database_create,
     'download': download,
-    'inventory_post': inventory_post
+    'inventory_post': inventory_post,
+    'google_oauth': google_oauth,
 }
 
 
