@@ -21,9 +21,10 @@ def database_create(*args):
     try:
         os.makedirs(settings.DATA_ROOT)
     except OSError as err:
-        if err.errno == errno.EEXIST and os.path.isdir(path):
+        if err.errno == errno.EEXIST and os.path.isdir(settings.DATA_ROOT):
             pass
-        else: raise
+        else:
+            raise
 
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
