@@ -3,17 +3,23 @@
 from __future__ import absolute_import
 
 import os
+import random
 import logging
 
 import youtube_dl
 from youtube_dl.utils import DownloadError
 
-
 from mhundwa.models import Video, Post, session
+from mhundwa.youtube import upload_video
+from mhundwa.leprosorium.comments import create
 import settings
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+COMMENT_TEMPLATE = u'''<a href="http://www.youtube.com/watch?v={video.repost_id}&t={video.timestamp}">
+<img src="http://img.youtube.com/vi/{video.repost_id}/{randint}.jpg" width="120" height="90">
+</a>'''
 
 
 def inventory_post():
@@ -35,4 +41,13 @@ def inventory_post():
             downloader.extract_info('http://www.youtube.com/watch?v={}'.format(video.id), download=False)
         except DownloadError:
             # Видео было удалено, закачиваем резервную копию, оставляем комментарий
-            pass
+
+            if not video.repost_id:
+                try:
+                    video = upload_video(video)
+                except RuntimeError as e:
+                    logger.exception('Got unexpected error')
+                    continue
+
+            comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
+            create(video.post_id, video.comment_id, comment)

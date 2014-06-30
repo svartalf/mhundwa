@@ -24,3 +24,14 @@ def vote(id, value):
         'vote': value,
         'csrf_token': get_csrf_token(),
     })
+
+
+def create(post_id, parent_id, content):
+    """Написание нового комментария"""
+
+    return post('https://leprosorium.ru/ajax/comment/yarrr/', data={
+        'post': post_id,
+        'parent': parent_id,
+        'body': content,
+        'csrf_token': get_csrf_token(),
+    })
