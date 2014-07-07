@@ -12,6 +12,7 @@ import tempfile
 
 from mhundwa.helpers import get
 from mhundwa.models import Video, Post, session
+import settings
 
 
 logger = logging.getLogger(__name__)
@@ -55,6 +56,11 @@ def parse(post_id=None):
     for comment in comments:
         comment_id = int(comment.attrib['id'])
         author_id = int(comment.attrib['data-user_id'])
+
+        # Не сохраняем свои собственные видео
+        if author_id == settings.AUTH_ID:
+            continue
+
         comment_date = int(comment.xpath('.//span[contains(@class, "js-date")]')[0].attrib['data-epoch_date'])
         comment_date = datetime.datetime.fromtimestamp(comment_date)
 
