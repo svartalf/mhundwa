@@ -52,5 +52,8 @@ def inventory_post():
                 logger.exception('Got unexpected error')
                 continue
 
-            comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
-            create(video.post_id, video.comment_id, comment)
+            session.add(video)
+            session.commit()
+
+            # comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
+            # create(video.post_id, video.comment_id, comment)
