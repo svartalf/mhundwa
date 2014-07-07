@@ -56,5 +56,7 @@ def inventory_post():
             session.add(video)
             session.commit()
 
-            # comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
-            # create(video.post_id, video.comment_id, comment)
+            comment = COMMENT_TEMPLATE.format(video=video, randint=random.randint(1, 3))
+            create(video.post_id, video.comment_id, comment)
+
+            logger.info('Reposting video {}'.format(video.id))
