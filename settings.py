@@ -3,7 +3,7 @@
 from os import path
 
 
-PWD = path.abspath('.')
+PWD = path.dirname(path.abspath(__file__))
 
 # Корневая папка данных
 DATA_ROOT = path.join(PWD, 'mhundwa-data')

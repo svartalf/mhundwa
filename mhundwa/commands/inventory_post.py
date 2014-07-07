@@ -33,6 +33,7 @@ def inventory_post():
 
     downloader = youtube_dl.YoutubeDL({
         'outtmpl': os.path.join(settings.DATA_VIDEOS, '%(id)s'),
+        'cachedir': os.path.join(settings.DATA_VIDEOS, '.cache'),
     })
     downloader.add_default_info_extractors()
 
