@@ -22,7 +22,7 @@ def download():
     if not os.path.isdir(settings.DATA_VIDEOS):
         os.makedirs(settings.DATA_VIDEOS)
 
-    latest_posts = [x[0] for x in session.query(Post).order_by(Post.id.desc()).limit(2).values(Post.id)]
+    latest_posts = [x[0] for x in session.query(Post).order_by(Post.id.desc()).limit(1).values(Post.id)]
     videos = session.query(Video).filter(Video.post_id.in_(latest_posts)).filter_by(was_removed=False).order_by(Video.post_id.desc())
 
     download_targets = []
