@@ -82,6 +82,8 @@ def parse(post_id=None):
                 video_id = params['v'][0]
             elif 'youtu.be' in location:
                 video_id = url.path.lstrip('/')
+            else:
+                continue
 
             # Варианты написания timestamp в ссылке: 120, 16s, 2m32s
             try:
