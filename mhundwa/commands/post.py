@@ -79,7 +79,11 @@ def parse(post_id=None):
 
             video_id, timestamp = None, 0
             if 'youtube.com' in location:
-                video_id = params['v'][0]
+                try:
+                    video_id = params['v'][0]
+                except (KeyError, IndexError):
+                    logger.error('Invalid YouTube video ID from URL: {}'.format(link))
+                    continue
             elif 'youtu.be' in location:
                 video_id = url.path.lstrip('/')
             else:
