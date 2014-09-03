@@ -34,7 +34,7 @@ def parse(post_id=None):
             session.add(post)
             session.commit()
     else:
-        post = session.query(Post).order_by(Post.last_checked.asc()).first()
+        post = session.query(Post).order_by(Post.id.desc()).first()
         if post is None:
             return  # TODO: warning message
 
