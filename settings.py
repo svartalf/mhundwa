@@ -46,7 +46,7 @@ LOGGING = {
     },
     'formatters': {
         'detailed': {
-            'format': '%(levelname)s %(asctime)s %(name)s %(message)s',
+            'format': '%(process)d %(levelname)s %(asctime)s %(name)s %(message)s',
         },
     },
     'loggers': {

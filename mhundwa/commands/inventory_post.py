@@ -38,6 +38,10 @@ def inventory_post():
     downloader.add_default_info_extractors()
 
     for video in videos:
+        if video.repost_id:
+            logger.debug('Skipping video {} check, because it was already reposted.'.format(video.id))
+            continue
+
         if not os.path.exists(os.path.join(settings.DATA_VIDEOS, video.id)):
             logger.warning('Skipping video {} check, because video file doesn\'t exists'.format(video.id))
             continue
